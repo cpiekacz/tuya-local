@@ -1,0 +1,865 @@
+name: Water heat pump
+products:
+  - id: gxmpeyavkoi5bamc
+    manufacturer: Rakentaa
+    model: RA040-PW13-A3
+entities:
+  # Main controls (screens 1, 2 and 5)
+  - entity: switch
+    icon: "mdi:power"
+    dps:
+      - id: 1
+        type: boolean
+        name: switch
+
+  - entity: select
+    translation_key: heat_pump_mode
+    dps:
+      - id: 5
+        type: string
+        name: option
+        mapping:
+          - dps_val: wth
+            value: hotwater
+          - dps_val: heat
+            value: heat
+          - dps_val: wth_heat
+            value: hotwater_heat
+          - dps_val: cool
+            value: cool
+          - dps_val: wth_cool
+            value: hotwater_cool
+
+  - entity: select
+    name: Operating mode
+    icon: "mdi:speedometer"
+    dps:
+      - id: 2
+        type: string
+        name: option
+        mapping:
+          - dps_val: smart
+            value: Smart
+          - dps_val: strong
+            value: Strong
+          - dps_val: mute
+            value: Quiet
+
+  # Temperature settings (screen 6 - DP 118 indices 0..4)
+  - entity: number
+    name: Heating and cooling return difference
+    class: temperature_delta
+    icon: "mdi:thermometer-lines"
+    dps:
+      - id: 118
+        type: base64
+        name: value
+        optional: true
+        unit: C
+        mask: "FFFFFFFF0000000000000000000000000000000000000000\
+               000000000000000000000000000000000000000000000000\
+               000000000000000000000000000000000000000000000000\
+               0000000000000000"
+        range:
+          min: 2
+          max: 18
+
+  - entity: number
+    name: DHW return temperature difference
+    class: temperature_delta
+    icon: "mdi:thermometer-lines"
+    dps:
+      - id: 118
+        type: base64
+        name: value
+        optional: true
+        unit: C
+        mask: "00000000FFFFFFFF00000000000000000000000000000000\
+               000000000000000000000000000000000000000000000000\
+               000000000000000000000000000000000000000000000000\
+               0000000000000000"
+        range:
+          min: 2
+          max: 18
+
+  - entity: number
+    name: DHW target temperature
+    class: temperature
+    icon: "mdi:water-thermometer"
+    dps:
+      - id: 118
+        type: base64
+        name: value
+        optional: true
+        unit: C
+        mask: "0000000000000000FFFFFFFF000000000000000000000000\
+               000000000000000000000000000000000000000000000000\
+               000000000000000000000000000000000000000000000000\
+               0000000000000000"
+        range:
+          min: 28
+          max: 55
+
+  - entity: number
+    name: Cooling target temperature
+    class: temperature
+    icon: "mdi:snowflake-thermometer"
+    dps:
+      - id: 118
+        type: base64
+        name: value
+        optional: true
+        unit: C
+        mask: "000000000000000000000000FFFFFFFF0000000000000000\
+               000000000000000000000000000000000000000000000000\
+               000000000000000000000000000000000000000000000000\
+               0000000000000000"
+        range:
+          min: 12
+          max: 30
+
+  - entity: number
+    name: Heating target temperature
+    class: temperature
+    icon: "mdi:heating-coil"
+    dps:
+      - id: 118
+        type: base64
+        name: value
+        optional: true
+        unit: C
+        mask: "00000000000000000000000000000000FFFFFFFF00000000\
+               000000000000000000000000000000000000000000000000\
+               000000000000000000000000000000000000000000000000\
+               0000000000000000"
+        range:
+          min: 15
+          max: 55
+
+  # User settings (screens 7 and 8 - DP 118 indices 5..19,
+  # DP 119 indices 0..1, DP 124 indices 12..14, DP 6)
+  - entity: number
+    name: Water temperature compensation
+    category: config
+    mode: box
+    class: temperature_delta
+    icon: "mdi:thermometer-plus"
+    dps:
+      - id: 118
+        type: base64
+        name: value
+        optional: true
+        unit: C
+        mask: "0000000000000000000000000000000000000000FFFFFFFF\
+               000000000000000000000000000000000000000000000000\
+               000000000000000000000000000000000000000000000000\
+               0000000000000000"
+        mask_signed: true
+        range:
+          min: -5
+          max: 15
+
+  - entity: number
+    name: High temperature disinfection cycle
+    category: config
+    mode: box
+    class: duration
+    icon: "mdi:calendar-refresh"
+    dps:
+      - id: 118
+        type: base64
+        name: value
+        optional: true
+        unit: d
+        mask: "000000000000000000000000000000000000000000000000\
+               FFFFFFFF0000000000000000000000000000000000000000\
+               000000000000000000000000000000000000000000000000\
+               0000000000000000"
+        range:
+          min: 0
+          max: 30
+
+  - entity: number
+    name: High temperature disinfection start time
+    category: config
+    mode: box
+    class: duration
+    icon: "mdi:clock-start"
+    dps:
+      - id: 118
+        type: base64
+        name: value
+        optional: true
+        unit: h
+        mask: "000000000000000000000000000000000000000000000000\
+               00000000FFFFFFFF00000000000000000000000000000000\
+               000000000000000000000000000000000000000000000000\
+               0000000000000000"
+        range:
+          min: 0
+          max: 23
+
+  - entity: number
+    name: High temperature disinfection duration
+    category: config
+    mode: box
+    class: duration
+    icon: "mdi:timer-outline"
+    dps:
+      - id: 118
+        type: base64
+        name: value
+        optional: true
+        unit: min
+        mask: "000000000000000000000000000000000000000000000000\
+               0000000000000000FFFFFFFF000000000000000000000000\
+               000000000000000000000000000000000000000000000000\
+               0000000000000000"
+        range:
+          min: 0
+          max: 90
+
+  - entity: number
+    name: High temperature disinfection target
+    category: config
+    mode: box
+    class: temperature
+    icon: "mdi:thermometer-high"
+    dps:
+      - id: 118
+        type: base64
+        name: value
+        optional: true
+        unit: C
+        mask: "000000000000000000000000000000000000000000000000\
+               000000000000000000000000FFFFFFFF0000000000000000\
+               000000000000000000000000000000000000000000000000\
+               0000000000000000"
+        range:
+          min: 0
+          max: 90
+
+  - entity: number
+    name: Heat pump disinfection temperature
+    category: config
+    mode: box
+    class: temperature
+    icon: "mdi:heat-pump-outline"
+    dps:
+      - id: 118
+        type: base64
+        name: value
+        optional: true
+        unit: C
+        mask: "000000000000000000000000000000000000000000000000\
+               00000000000000000000000000000000FFFFFFFF00000000\
+               000000000000000000000000000000000000000000000000\
+               0000000000000000"
+        range:
+          min: 40
+          max: 65
+
+  - entity: select
+    name: Heating target automatic adjustment
+    category: config
+    icon: "mdi:chart-bell-curve-cumulative"
+    dps:
+      - id: 118
+        type: base64
+        name: option
+        optional: true
+        mask: "000000000000000000000000000000000000000000000000\
+               0000000000000000000000000000000000000000FFFFFFFF\
+               000000000000000000000000000000000000000000000000\
+               0000000000000000"
+        mapping:
+          - dps_val: 0
+            value: Disabled
+          - dps_val: 1
+            value: Enabled
+
+  - entity: number
+    name: Heating compensation ambient temperature
+    category: config
+    mode: box
+    class: temperature
+    icon: "mdi:home-thermometer-outline"
+    dps:
+      - id: 118
+        type: base64
+        name: value
+        optional: true
+        unit: C
+        mask: "000000000000000000000000000000000000000000000000\
+               000000000000000000000000000000000000000000000000\
+               FFFFFFFF0000000000000000000000000000000000000000\
+               0000000000000000"
+        range:
+          min: 0
+          max: 40
+
+  - entity: number
+    name: Target temperature compensation coefficient
+    category: config
+    mode: box
+    icon: "mdi:tune-variant"
+    dps:
+      - id: 118
+        type: base64
+        name: value
+        optional: true
+        mask: "000000000000000000000000000000000000000000000000\
+               000000000000000000000000000000000000000000000000\
+               00000000FFFFFFFF00000000000000000000000000000000\
+               0000000000000000"
+        range:
+          min: 1
+          max: 30
+
+  - entity: select
+    name: Frequency after reaching target temperature
+    category: config
+    icon: "mdi:sine-wave"
+    dps:
+      - id: 118
+        type: base64
+        name: option
+        optional: true
+        mask: "000000000000000000000000000000000000000000000000\
+               000000000000000000000000000000000000000000000000\
+               0000000000000000FFFFFFFF000000000000000000000000\
+               0000000000000000"
+        mapping:
+          - dps_val: 0
+            value: Reduced
+          - dps_val: 1
+            value: Constant
+
+  - entity: number
+    name: Pipe heater start ambient temperature
+    category: config
+    mode: box
+    class: temperature
+    icon: "mdi:radiator"
+    dps:
+      - id: 118
+        type: base64
+        name: value
+        optional: true
+        unit: C
+        mask: "000000000000000000000000000000000000000000000000\
+               000000000000000000000000000000000000000000000000\
+               000000000000000000000000FFFFFFFF0000000000000000\
+               0000000000000000"
+        mask_signed: true
+        range:
+          min: -20
+          max: 20
+
+  - entity: number
+    name: DHW heater start delay
+    category: config
+    mode: box
+    class: duration
+    icon: "mdi:timer-cog-outline"
+    dps:
+      - id: 118
+        type: base64
+        name: value
+        optional: true
+        unit: min
+        mask: "000000000000000000000000000000000000000000000000\
+               000000000000000000000000000000000000000000000000\
+               00000000000000000000000000000000FFFFFFFF00000000\
+               0000000000000000"
+        range:
+          min: 0
+          max: 60
+
+  - entity: select
+    name: Heat pump function
+    category: config
+    icon: "mdi:cog-transfer-outline"
+    dps:
+      - id: 118
+        type: base64
+        name: option
+        optional: true
+        mask: "000000000000000000000000000000000000000000000000\
+               000000000000000000000000000000000000000000000000\
+               0000000000000000000000000000000000000000FFFFFFFF\
+               0000000000000000"
+        mapping:
+          - dps_val: 1
+            value: Heating
+          - dps_val: 2
+            value: Heating + Cooling
+          - dps_val: 3
+            value: Heating + DHW
+          - dps_val: 4
+            value: Heating + Cooling + DHW
+
+  - entity: select
+    name: Water pump mode after reaching target
+    category: config
+    icon: "mdi:pump"
+    dps:
+      - id: 118
+        type: base64
+        name: option
+        optional: true
+        mask: "000000000000000000000000000000000000000000000000\
+               000000000000000000000000000000000000000000000000\
+               000000000000000000000000000000000000000000000000\
+               FFFFFFFF00000000"
+        mapping:
+          - dps_val: 0
+            value: Intermittent
+          - dps_val: 1
+            value: Continuous
+          - dps_val: 2
+            value: Stop
+
+  - entity: number
+    name: Circulation pump cycle
+    category: config
+    mode: box
+    class: duration
+    icon: "mdi:sync-circle"
+    dps:
+      - id: 118
+        type: base64
+        name: value
+        optional: true
+        unit: min
+        mask: "000000000000000000000000000000000000000000000000\
+               000000000000000000000000000000000000000000000000\
+               000000000000000000000000000000000000000000000000\
+               00000000FFFFFFFF"
+        range:
+          min: 1
+          max: 120
+
+  - entity: select
+    name: DC circulation pump mode
+    category: config
+    icon: "mdi:pump"
+    dps:
+      - id: 119
+        type: base64
+        name: option
+        optional: true
+        mask: "FFFFFFFF0000000000000000000000000000000000000000\
+               000000000000000000000000000000000000000000000000\
+               000000000000000000000000000000000000000000000000\
+               0000000000000000"
+        mapping:
+          - dps_val: 0
+            value: "Off"
+          - dps_val: 1
+            value: Auto
+          - dps_val: 2
+            value: Manual
+
+  - entity: number
+    name: DC water pump manual speed
+    category: config
+    mode: box
+    icon: "mdi:speedometer-medium"
+    dps:
+      - id: 119
+        type: base64
+        name: value
+        optional: true
+        unit: "%"
+        mask: "00000000FFFFFFFF00000000000000000000000000000000\
+               000000000000000000000000000000000000000000000000\
+               000000000000000000000000000000000000000000000000\
+               0000000000000000"
+        range:
+          min: 10
+          max: 100
+
+  - entity: number
+    name: Smart grid capabilities
+    category: config
+    mode: box
+    icon: "mdi:transmission-tower"
+    dps:
+      - id: 124
+        type: base64
+        name: value
+        optional: true
+        mask: "000000000000000000000000000000000000000000000000\
+               000000000000000000000000000000000000000000000000\
+               FFFFFFFF0000000000000000000000000000000000000000\
+               0000000000000000"
+        range:
+          min: 0
+          max: 1
+
+  - entity: number
+    name: Smart grid operating time
+    category: config
+    mode: box
+    class: duration
+    icon: "mdi:timer-sand"
+    dps:
+      - id: 124
+        type: base64
+        name: value
+        optional: true
+        unit: min
+        mask: "000000000000000000000000000000000000000000000000\
+               000000000000000000000000000000000000000000000000\
+               00000000FFFFFFFF00000000000000000000000000000000\
+               0000000000000000"
+        range:
+          min: 0
+          max: 600
+
+  - entity: select
+    name: E-heater mode
+    category: config
+    icon: "mdi:heating-coil"
+    dps:
+      - id: 124
+        type: base64
+        name: option
+        optional: true
+        mask: "000000000000000000000000000000000000000000000000\
+               000000000000000000000000000000000000000000000000\
+               0000000000000000FFFFFFFF000000000000000000000000\
+               0000000000000000"
+        mapping:
+          - dps_val: 0
+            value: p28_0
+          - dps_val: 1
+            value: p28_1
+          - dps_val: 2
+            value: p28_2
+
+  - entity: select
+    translation_key: temperature_unit
+    category: config
+    dps:
+      - id: 6
+        type: string
+        name: option
+        optional: true
+        mapping:
+          - dps_val: c
+            value: celsius
+          - dps_val: f
+            value: fahrenheit
+
+  # State and telemetry (screens 3 and 4 - DP 101..117 and faults DP 15)
+  - entity: sensor
+    translation_key: inlet_temperature
+    class: temperature
+    dps:
+      - id: 101
+        type: integer
+        name: sensor
+        unit: C
+        class: measurement
+
+  - entity: sensor
+    translation_key: outlet_temperature
+    class: temperature
+    dps:
+      - id: 102
+        type: integer
+        name: sensor
+        unit: C
+        class: measurement
+
+  - entity: sensor
+    translation_key: ambient_temperature
+    class: temperature
+    dps:
+      - id: 103
+        type: integer
+        name: sensor
+        unit: C
+        class: measurement
+
+  - entity: sensor
+    name: Water current temperature
+    class: temperature
+    dps:
+      - id: 108
+        type: integer
+        name: sensor
+        unit: C
+        class: measurement
+
+  - entity: sensor
+    name: Exhaust gas temperature
+    class: temperature
+    dps:
+      - id: 104
+        type: integer
+        name: sensor
+        unit: C
+        class: measurement
+
+  - entity: sensor
+    name: Return gas temperature
+    class: temperature
+    dps:
+      - id: 105
+        type: integer
+        name: sensor
+        optional: true
+        unit: C
+        class: measurement
+
+  - entity: sensor
+    name: Evaporator coil temperature
+    class: temperature
+    dps:
+      - id: 106
+        type: integer
+        name: sensor
+        optional: true
+        unit: C
+        class: measurement
+
+  - entity: sensor
+    name: Cooling coil temperature
+    class: temperature
+    dps:
+      - id: 107
+        type: integer
+        name: sensor
+        optional: true
+        unit: C
+        class: measurement
+
+  - entity: sensor
+    name: Main EEV opening
+    icon: "mdi:valve"
+    dps:
+      - id: 109
+        type: integer
+        name: sensor
+        optional: true
+        unit: P
+        class: measurement
+
+  - entity: sensor
+    name: Assistant EEV opening
+    icon: "mdi:valve"
+    dps:
+      - id: 111
+        type: integer
+        name: sensor
+        optional: true
+        unit: P
+        class: measurement
+
+  - entity: sensor
+    name: Compressor current
+    class: current
+    dps:
+      - id: 112
+        type: integer
+        name: sensor
+        optional: true
+        unit: A
+        class: measurement
+
+  - entity: sensor
+    name: Heat sink temperature
+    class: temperature
+    dps:
+      - id: 113
+        type: integer
+        name: sensor
+        optional: true
+        unit: C
+        class: measurement
+
+  - entity: sensor
+    name: DC bus voltage
+    class: voltage
+    dps:
+      - id: 114
+        type: integer
+        name: sensor
+        optional: true
+        unit: V
+        class: measurement
+
+  - entity: sensor
+    name: Compressor frequency
+    class: frequency
+    dps:
+      - id: 115
+        type: integer
+        name: sensor
+        optional: true
+        unit: Hz
+        class: measurement
+
+  - entity: sensor
+    name: DC fan 1 speed
+    icon: "mdi:fan"
+    dps:
+      - id: 116
+        type: integer
+        name: sensor
+        optional: true
+        unit: rpm
+        class: measurement
+
+  - entity: sensor
+    name: DC fan 2 speed
+    icon: "mdi:fan"
+    dps:
+      - id: 117
+        type: integer
+        name: sensor
+        optional: true
+        unit: rpm
+        class: measurement
+
+  # Fault diagnostics (DP 15) and raw parameter buffers for automatic
+  # initialization (DP 118, 119, 124).
+  # DP 125 (factory reset) and password-protected factory settings are
+  # intentionally omitted.
+  - entity: binary_sensor
+    class: problem
+    category: diagnostic
+    dps:
+      - id: 15
+        type: bitfield
+        optional: true
+        name: sensor
+        mapping:
+          - dps_val: 0
+            value: false
+          - dps_val: null
+            value: false
+          - value: true
+      - id: 15
+        type: bitfield
+        optional: true
+        name: fault_code
+
+  - entity: sensor
+    name: Fault code
+    class: enum
+    category: diagnostic
+    icon: "mdi:alert-circle-outline"
+    dps:
+      - id: 15
+        type: bitfield
+        optional: true
+        name: sensor
+        mapping:
+          - dps_val: 0
+            value: OK
+          - dps_val: 1
+            value: Er03
+          - dps_val: 2
+            value: Er04
+          - dps_val: 4
+            value: Er05
+          - dps_val: 8
+            value: Er06
+          - dps_val: 16
+            value: Er09
+          - dps_val: 32
+            value: Er10
+          - dps_val: 64
+            value: Er12
+          - dps_val: 128
+            value: Er14
+          - dps_val: 256
+            value: Er15
+          - dps_val: 512
+            value: Er16
+          - dps_val: 1024
+            value: Er18
+          - dps_val: 2048
+            value: Er20
+          - dps_val: 4096
+            value: Er21
+          - dps_val: 8192
+            value: Er23
+          - dps_val: 16384
+            value: Er26
+          - dps_val: 32768
+            value: Er27
+          - dps_val: 65536
+            value: Er29
+          - dps_val: 131072
+            value: Er32
+          - dps_val: 262144
+            value: Er33
+          - dps_val: 524288
+            value: Er34
+          - dps_val: 1048576
+            value: Er42
+          - dps_val: 2097152
+            value: Er62
+          - dps_val: 4194304
+            value: Er63
+          - dps_val: 8388608
+            value: Er64
+          - dps_val: 16777216
+            value: Er66
+          - dps_val: 33554432
+            value: Er67
+          - dps_val: 67108864
+            value: Er68
+          - dps_val: 134217728
+            value: Er69
+          - dps_val: 268435456
+            value: Er70
+          - dps_val: null
+            value: null
+            hidden: true
+          - value: Unknown
+
+  - entity: text
+    name: Parameter group 1
+    category: diagnostic
+    icon: "mdi:code-array"
+    dps:
+      - id: 118
+        type: base64
+        name: value
+        optional: true
+        force: true
+        range:
+          min: 0
+          max: 255
+
+  - entity: text
+    name: Parameter group 2
+    category: diagnostic
+    icon: "mdi:code-array"
+    dps:
+      - id: 119
+        type: base64
+        name: value
+        optional: true
+        range:
+          min: 0
+          max: 255
+
+  - entity: text
+    name: Parameter group 7
+    category: diagnostic
+    icon: "mdi:code-array"
+    dps:
+      - id: 124
+        type: base64
+        name: value
+        optional: true
+        range:
+          min: 0
+          max: 255
